@@ -32,7 +32,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   //! END @TODO1
   
   // TODO
-  app.get('/filteredimage', function (request: any, response: any){
+  app.get('/filteredimage', function (request: express.Request, response: express.Response){
     const { image_url } : { image_url: string } = request.query
     if ( !image_url ) {
       response.status(200).send('image_url is required!')
@@ -41,13 +41,13 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
       filterImageFromURL(image_url)
         .then(function(data: any){
           //console.log('data', data)
-          response.status(200).sendFile(data, function(){
+          response.status(404).sendFile(data, function(){
             //console.log('remove')
             deleteLocalFiles([data])
           })        
         })
-        .catch(() => {
-          response.status(200).send('Cannot load file')                    
+        .catch((error: any) => {
+          response.send(error)
         })    
     } catch (error: any) {      
       response.status(500).send('error -- '+ error)
@@ -57,7 +57,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
   // Root Endpoint
   // Displays a simple message to the user
-  app.get( "/", async ( request: any, response: any ) => {
+  app.get( "/", (request: express.Request, response: express.Response) => {
     response.send("try GET /filteredimage?image_url={{}}")
   } );
   
