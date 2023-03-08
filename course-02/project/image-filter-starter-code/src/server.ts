@@ -37,7 +37,7 @@ import cors from 'cors';
   //! END @TODO1
   
   // TODO
-  app.get('/filteredimage', async function (req: any, res: any){
+  app.get('/filteredimage', function (req: any, res: any){
     const { image_url } = req.query
     if ( !image_url ) {
       res.status(200).send('image_url is required!')
