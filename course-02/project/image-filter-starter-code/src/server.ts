@@ -2,15 +2,10 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
-import cors from 'cors';
-
 (async () => {
 
   // Init the Express application
   const app = express();
-  
-  // apply cors
-  app.use(cors())
 
   // Set the network port
   const port = process.env.PORT || 8082;
@@ -37,33 +32,33 @@ import cors from 'cors';
   //! END @TODO1
   
   // TODO
-  app.get('/filteredimage', function (req: any, res: any){
-    const { image_url } = req.query
+  app.get('/filteredimage', function (request: any, response: any){
+    const { image_url } : { image_url: string } = request.query
     if ( !image_url ) {
-      res.status(200).send('image_url is required!')
+      response.status(200).send('image_url is required!')
     }
     try {            
       filterImageFromURL(image_url)
         .then(function(data: any){
           //console.log('data', data)
-          res.status(200).sendFile(data, function(){
+          response.status(200).sendFile(data, function(){
             //console.log('remove')
             deleteLocalFiles([data])
           })        
         })
-        .catch((err) => {
-          res.status(200).send('Cannot load file')                    
+        .catch(() => {
+          response.status(200).send('Cannot load file')                    
         })    
-    } catch (error) {      
-      res.status(500).send('error -- '+ error)
+    } catch (error: any) {      
+      response.status(500).send('error -- '+ error)
     }    
     
   })
 
   // Root Endpoint
   // Displays a simple message to the user
-  app.get( "/", async ( req: any, res: any ) => {
-    res.send("try GET /filteredimage?image_url={{}}")
+  app.get( "/", async ( request: any, response: any ) => {
+    response.send("try GET /filteredimage?image_url={{}}")
   } );
   
 
